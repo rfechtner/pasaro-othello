@@ -4,7 +4,7 @@ public class Test {
 
 	public static void main(String[] args) {
 		
-		String test = "Ron was really here!";
+		String test = "Ron was here!";
 		
 		System.out.println(test);
 
