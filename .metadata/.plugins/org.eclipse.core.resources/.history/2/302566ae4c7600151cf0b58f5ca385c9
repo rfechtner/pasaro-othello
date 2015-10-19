@@ -1,0 +1,46 @@
+package version4;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
+public class AI extends Player {
+		
+	public AI(ChipType chipType){
+		super(chipType, genOwnChips(chipType), genOtherChips(chipType));
+	}
+	
+	public void makeMove(int dezimal) {
+		super.makeMove(dezimal);
+	}
+	
+	public void makeMoveAI(){
+		
+		
+		int greed = berechneGreedy();
+		
+		
+		makeMove(greed);
+	}
+	
+	private int berechneGreedy() {
+		
+		int biggest = 0;
+		int ausgabe = 0;
+		
+		for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
+		    Integer key = entry.getKey();
+		    ArrayList<Integer> value = entry.getValue();
+		    
+		    if(value.size() > biggest){
+		    	biggest = value.size();
+		    	ausgabe = key;
+		    }
+		    
+		}
+		
+		return ausgabe;
+	}
+
+
+
+}
