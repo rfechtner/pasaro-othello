@@ -17,6 +17,8 @@ public class Board {
 	
 	public void initGame(){
 		
+		System.out.println("GIT Version");
+		
 		h = new Human(ChipType.WHITE);
 		a = new AI(ChipType.BLACK);
 		
