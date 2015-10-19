@@ -1,6 +1,7 @@
 package bitBoardApproachV1;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 public class AI extends Player {
@@ -9,20 +10,20 @@ public class AI extends Player {
 		super(chipType, genOwnChips(chipType), genOtherChips(chipType));
 	}
 	
-	public void makeMove(int dezimal) {
-		super.makeMove(dezimal);
+	public void makeMove(int dezimal, HashMap<Integer, ArrayList<Integer>> toTurn) {
+		super.makeMove(dezimal, toTurn);
 	}
 	
-	public void makeMoveAI(){
+	public void makeMoveAI(HashMap<Integer, ArrayList<Integer>> toTurn){
 		
 		
-		int greed = berechneGreedy();
+		int greed = berechneGreedy(toTurn);
 		
 		
-		makeMove(greed);
+		makeMove(greed, toTurn);
 	}
 	
-	private int berechneGreedy() {
+	private int berechneGreedy(HashMap<Integer, ArrayList<Integer>> toTurn) {
 		
 		int biggest = 0;
 		int ausgabe = 0;

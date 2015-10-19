@@ -11,8 +11,6 @@ public abstract class Player {
 	private int score;
 	private long ownChips;
 	private long otherChips;
-	private ArrayList<Integer> moeglich = new ArrayList<Integer>();
-	public HashMap<Integer, ArrayList<Integer>> toTurn = new HashMap<Integer, ArrayList<Integer>>();
 	
 	private ArrayList<Integer> upLeft = new ArrayList<Integer>();
 	private ArrayList<Integer> up = new ArrayList<Integer>();
@@ -57,9 +55,9 @@ public abstract class Player {
 		return otherChips;
 	}
 	
-	public ArrayList<Integer> getMoeglicheZuege(){
-		return moeglich;
-	}
+//	public ArrayList<Integer> getMoeglicheZuege(){
+//		return moeglich;
+//	}
 
 	public long getOwnChips() {
 		return ownChips;
@@ -85,7 +83,7 @@ public abstract class Player {
 		return chipType;
 	}
 	
-	public void toTurnAusgeben(){
+	public void toTurnAusgeben(HashMap<Integer, ArrayList<Integer>> toTurn){
 		for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
 		    Integer key = entry.getKey();
 		    ArrayList<Integer> value = entry.getValue();
@@ -94,9 +92,10 @@ public abstract class Player {
 		}
 	}
 
-	public void possibleMoves() {
+	public HashMap<Integer, ArrayList<Integer>> possibleMoves() {
 		
-		moeglich.clear();
+		HashMap<Integer, ArrayList<Integer>> toTurn = new HashMap<Integer, ArrayList<Integer>>();
+		
 		toTurn.clear();
 		
 		up.clear();
@@ -108,40 +107,40 @@ public abstract class Player {
 		downLeft.clear();
 		downRight.clear();
 		
-		berechneZuege(otherChips, ownChips);
+		berechneZuege(otherChips, ownChips, toTurn);
 		
 		long ausgabe = 0L;
 		
-		for(Integer i : moeglich){
-			
-			if(!toTurn.get(i).isEmpty()){
-				System.out.println("M�glicher Zug: "+i+" --> x: "+i%8+" y: "+i/8);
-				long tmp = (long) Math.pow(2, i);
-				
-				ausgabe = ausgabe|tmp;
-			}
+		for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
+		    Integer key = entry.getKey();
+		    ArrayList<Integer> value = entry.getValue();
+		    
+		    System.out.println("Moeglicher Zug (toTurn): "+key+" --> "+value);
+		    
 		}
 	
 		possibleMoves = ausgabe;
 		
+		return toTurn;
+		
 	}
 
-	public void berechneZuege(long gegner, long spieler) {
+	public void berechneZuege(long gegner, long spieler, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		for (int i = 0; i < 64; i++) {
 			if (((spieler >> i) & 1) == 1) {
-				gehtUnten(gegner, spieler, i);
-				gehtLinks(gegner, spieler, i);
-				gehtRechts(gegner, spieler, i);
-				getOben(gegner, spieler, i);
-				gehtUntenLinks(gegner, spieler, i);
-				gehtUntenRechts(gegner, spieler, i);
-				gehtObenLinks(gegner, spieler, i);
-				gehtObenRechts(gegner, spieler, i);
+				gehtUnten(gegner, spieler, i, toTurn);
+				gehtLinks(gegner, spieler, i, toTurn);
+				gehtRechts(gegner, spieler, i, toTurn);
+				getOben(gegner, spieler, i, toTurn);
+				gehtUntenLinks(gegner, spieler, i, toTurn);
+				gehtUntenRechts(gegner, spieler, i, toTurn);
+				gehtObenLinks(gegner, spieler, i, toTurn);
+				gehtObenRechts(gegner, spieler, i, toTurn);
 			}
 		}
 	}
 
-	public void gehtUnten(long gegner, long spieler, int pos) {
+	public void gehtUnten(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos + 8 > 63) {
 			up.clear();
 			return;
@@ -150,12 +149,10 @@ public abstract class Player {
 			up.add(pos+8);
 			
 			gegnerDazwischen = true;
-			gehtUnten(gegner, spieler, pos + 8);
+			gehtUnten(gegner, spieler, pos + 8, toTurn);
 			
 		} else if (gegnerDazwischen && ((spieler >> pos + 8) & 1) != 1) {
-			
-			moeglich.add(pos + 8);
-			
+
 			if(!toTurn.containsKey(pos+8)){				
 				toTurn.put(pos+8, new ArrayList<Integer>());
 			}
@@ -173,7 +170,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtLinks(long gegner, long spieler, int pos) {
+	public void gehtLinks(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		if ((pos - 1) % 8 == 7) {
 			right.clear();
 			return;
@@ -182,10 +179,9 @@ public abstract class Player {
 			right.add(pos-1);
 			
 			gegnerDazwischen = true;
-			gehtLinks(gegner, spieler, pos - 1);
+			gehtLinks(gegner, spieler, pos - 1, toTurn);
 		} else if (gegnerDazwischen && ((spieler >> pos - 1) & 1) != 1) {
-			moeglich.add(pos - 1);
-			
+
 			if(!toTurn.containsKey(pos-1)){				
 				toTurn.put(pos-1, new ArrayList<Integer>());
 			}
@@ -203,7 +199,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtUntenLinks(long gegner, long spieler, int pos) {
+	public void gehtUntenLinks(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos + 7 > 63 || (pos + 7) % 8 == 7) {
 			upRight.clear();
 			return;
@@ -212,10 +208,9 @@ public abstract class Player {
 			upRight.add(pos+7);
 			
 			gegnerDazwischen = true;
-			gehtUntenLinks(gegner, spieler, pos + 7);
+			gehtUntenLinks(gegner, spieler, pos + 7, toTurn);
 		} else if (gegnerDazwischen && ((spieler >> pos + 7) & 1) != 1) {
-			moeglich.add(pos + 7);
-			
+
 			if(!toTurn.containsKey(pos+7)){				
 				toTurn.put(pos+7, new ArrayList<Integer>());
 			}
@@ -233,7 +228,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtRechts(long gegner, long spieler, int pos) {
+	public void gehtRechts(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		if ((pos + 1) % 8 == 0) {
 			left.clear();
 			return;
@@ -242,10 +237,9 @@ public abstract class Player {
 			left.add(pos+1);
 			
 			gegnerDazwischen = true;
-			gehtRechts(gegner, spieler, pos + 1);
+			gehtRechts(gegner, spieler, pos + 1, toTurn);
 		} else if (gegnerDazwischen && ((spieler >> pos + 1) & 1) != 1) {
-			moeglich.add(pos + 1);
-			
+
 			if(!toTurn.containsKey(pos+1)){				
 				toTurn.put(pos+1, new ArrayList<Integer>());
 			}
@@ -263,7 +257,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtUntenRechts(long gegner, long spieler, int pos) {
+	public void gehtUntenRechts(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		if ((pos + 9 )> 63 || (pos+9) % 8 == 0) {
 			upLeft.clear();
 			return;
@@ -272,10 +266,9 @@ public abstract class Player {
 			upLeft.add(pos+9);
 			
 			gegnerDazwischen = true;
-			gehtUntenRechts(gegner, spieler, pos + 9);
+			gehtUntenRechts(gegner, spieler, pos + 9, toTurn);
 		} else if (gegnerDazwischen && ((spieler >> pos + 9) & 1) != 1) {
-			moeglich.add(pos + 9);
-			
+
 			if(!toTurn.containsKey(pos+9)){				
 				toTurn.put(pos+9, new ArrayList<Integer>());
 			}
@@ -293,7 +286,7 @@ public abstract class Player {
 		}
 	}
 
-	public void getOben(long gegner, long spieler, int pos) {
+	public void getOben(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos - 8 < 0) {
 			down.clear();
 			return;
@@ -302,10 +295,9 @@ public abstract class Player {
 			down.add(pos-8);
 			
 			gegnerDazwischen = true;
-			getOben(gegner, spieler, pos - 8);
+			getOben(gegner, spieler, pos - 8, toTurn);
 		} else if (gegnerDazwischen && ((spieler >> pos - 8) & 1) != 1) {
-			moeglich.add(pos - 8);
-			
+
 			if(!toTurn.containsKey(pos-8)){				
 				toTurn.put(pos-8, new ArrayList<Integer>());
 			}
@@ -323,7 +315,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtObenRechts(long gegner, long spieler, int pos) {
+	public void gehtObenRechts(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos - 7 < 0 || (pos-7) % 8 == 0) {
 			downLeft.clear();
 			return;
@@ -332,10 +324,9 @@ public abstract class Player {
 			downLeft.add(pos-7);
 			
 			gegnerDazwischen = true;
-			gehtObenRechts(gegner, spieler, pos - 7);
+			gehtObenRechts(gegner, spieler, pos - 7, toTurn);
 		} else if (gegnerDazwischen && ((spieler >> pos - 7) & 1) != 1) {
-			moeglich.add(pos - 7);
-			
+
 			if(!toTurn.containsKey(pos-7)){				
 				toTurn.put(pos-7, new ArrayList<Integer>());
 			}
@@ -353,7 +344,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtObenLinks(long gegner, long spieler, int pos) {
+	public void gehtObenLinks(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos - 9 < 0 || (pos - 9) % 8 == 7) {
 			downRight.clear();
 			return;
@@ -362,10 +353,9 @@ public abstract class Player {
 			downRight.add(pos-9);
 			
 			gegnerDazwischen = true;
-			gehtObenLinks(gegner, spieler, pos - 9);
+			gehtObenLinks(gegner, spieler, pos - 9, toTurn);
 		} else if (gegnerDazwischen && ((spieler >> pos - 9) & 1) != 1) {
-			moeglich.add(pos - 9);
-			
+
 			if(!toTurn.containsKey(pos-9)){				
 				toTurn.put(pos-9, new ArrayList<Integer>());
 			}
@@ -383,7 +373,7 @@ public abstract class Player {
 		}
 	}
 
-	public void makeMove(int dezimal) {
+	public void makeMove(int dezimal, HashMap<Integer, ArrayList<Integer>> toTurn) {
 
 		ArrayList<Integer> tmpArray = toTurn.get(dezimal);
 		
@@ -399,7 +389,6 @@ public abstract class Player {
 		}
 		
 		for(Integer i : tmpArray){
-			System.out.println("toTurn: "+i);
 			dezLong = (long) Math.pow(2, i);
 			ownChips = ownChips | dezLong;
 			otherChips = otherChips & ~(1L << i);
@@ -411,12 +400,9 @@ public abstract class Player {
 	public void spielfeldAusgeben(long schwarz, long weiss) {
 		String spielfeld[][] = new String[8][8];
 		for (int i = 0; i < 64; i++) {
-			if(moeglich.contains(i)){
-				spielfeld[i / 8][i % 8] = " ";
-			}else{
-				spielfeld[i / 8][i % 8] = " ";
-			}
+			spielfeld[i / 8][i % 8] = " ";
 		}
+		
 		for (int i = 0; i < 64; i++) {
 			if (((schwarz >> i) & 1) == 1) {
 				spielfeld[i / 8][i % 8] = "s";
