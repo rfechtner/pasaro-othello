@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import BitboardApproach.Spieler;
-
 public class Board {
 	int currentTurn; // 1 = player 2 = A.I.
 	boolean finished;
