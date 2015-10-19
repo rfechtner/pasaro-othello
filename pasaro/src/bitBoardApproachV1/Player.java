@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+/**
+ * Abstract class contains methods for both AI and the player
+ */
 public abstract class Player {
 
 	private ChipType chipType;
@@ -31,6 +34,11 @@ public abstract class Player {
 		this.otherChips = otherChips;
 	}
 
+	/**
+	 * sets the ownChips to the respective position on the board
+	 * @param chipType , the color
+	 * @return long position of own chips on board
+	 */
 	public static long genOwnChips(ChipType chipType) {
 		long ownChips;
 
@@ -42,7 +50,16 @@ public abstract class Player {
 
 		return ownChips;
 	}
+<<<<<<< HEAD
 
+=======
+	
+	/**
+	 * sets the otherChips to the respective position on the board
+	 * @param chipType
+	 * @return long position of other chips on board
+	 */
+>>>>>>> 82480aede6fa766bab03cd60e4a5ea2516705cd5
 	public static long genOtherChips(ChipType chipType) {
 		long otherChips;
 
@@ -78,7 +95,15 @@ public abstract class Player {
 	public ChipType getChipType() {
 		return chipType;
 	}
+<<<<<<< HEAD
 
+=======
+	
+	/**
+	 * prints the contained items in the hashmap
+	 * @param toTurn Hashmap
+	 */
+>>>>>>> 82480aede6fa766bab03cd60e4a5ea2516705cd5
 	public void toTurnAusgeben(HashMap<Integer, ArrayList<Integer>> toTurn){
 		for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
 		    Integer key = entry.getKey();
@@ -88,6 +113,12 @@ public abstract class Player {
 		}
 	}
 
+	/**
+	 * calculates all the possible moves for current state in the game
+	 * @param ownchips , chips of the current player
+	 * @param otherchips , chips of the enemy
+	 * @return hashmap with all the possible moves as key and all positions to turn for the respective move
+	 */
 	public HashMap<Integer, ArrayList<Integer>> possibleMoves(long ownchips, long otherchips) {
 		HashMap<Integer, ArrayList<Integer>> toTurn = new HashMap<Integer, ArrayList<Integer>>();
 
@@ -120,6 +151,12 @@ public abstract class Player {
 
 	}
 
+	/**
+	 * calls the methods for each direction of the current move
+	 * @param gegner , positions of all chips of the enemy
+	 * @param spieler , positions of all chips of the play
+	 * @param toTurn , hashmap to store the possible moves
+	 */
 	public void berechneZuege(long gegner, long spieler, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		for (int i = 0; i < 64; i++) {
 			if (((spieler >> i) & 1) == 1) {
@@ -135,6 +172,15 @@ public abstract class Player {
 		}
 	}
 
+	/**
+	 * following methods check the respective direction for possible moves and store such in the hashmap
+	 * @param gegner
+	 * @param spieler
+	 * @param pos
+	 * @param toTurn
+	 */
+	
+	
 	public void gehtUnten(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos + 8 > 63) {
 			up.clear();
@@ -368,6 +414,11 @@ public abstract class Player {
 		}
 	}
 
+	/**
+	 * makes an actual move on the board 
+	 * @param dezimal , int position of the move
+	 * @param toTurn , hasmap containing all possible moves
+	 */
 	public void makeMove(int dezimal, HashMap<Integer, ArrayList<Integer>> toTurn) {
 
 		ArrayList<Integer> tmpArray = toTurn.get(dezimal);
@@ -390,8 +441,25 @@ public abstract class Player {
 		}
 
 	}
+	
+	/**
+	 * 
+	 * @param positionImLong
+	 * @return
+	 */
+	public int[] integerToArray(int positionImLong){
+		int[] ausgabe = new int[2];
+		ausgabe[0] = positionImLong/8;
+		ausgabe[1] = positionImLong%8;
+		
+		return ausgabe;
+	}
 
-	/* TEST */
+	/**
+	 * prints the current board to the promt
+	 * @param schwarz , positions of the enemy
+	 * @param weiss , positions of the player
+	 */
 	public void spielfeldAusgeben(long schwarz, long weiss) {
 		String spielfeld[][] = new String[8][8];
 		for (int i = 0; i < 64; i++) {

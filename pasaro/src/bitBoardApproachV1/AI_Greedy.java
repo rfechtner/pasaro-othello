@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+<<<<<<< HEAD:pasaro/src/bitBoardApproachV1/AI.java
 public class AI extends Player {
 
 	private HashMap<Integer, Integer> moveScores = new HashMap<Integer, Integer>();
@@ -21,6 +22,11 @@ public class AI extends Player {
 		{  120, -20,  20,  5,  5,  20, -20, 120 } };
 
 	public AI(ChipType chipType){
+=======
+public class AI_Greedy extends Player {
+		
+	public AI_Greedy(ChipType chipType){
+>>>>>>> 82480aede6fa766bab03cd60e4a5ea2516705cd5:pasaro/src/bitBoardApproachV1/AI_Greedy.java
 		super(chipType, genOwnChips(chipType), genOtherChips(chipType));
 		//fills the hashmap with the desired score values for each position
 		int key = 0;

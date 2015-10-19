@@ -17,14 +17,14 @@ public class Board {
 	boolean beendet;
 	
 	Human h;
-	AI a;
+	AI_Greedy a;
 	
 	public void initGame(){
 		
 		System.out.println("GIT Version");
 		
 		h = new Human(ChipType.WHITE);
-		a = new AI(ChipType.BLACK);
+		a = new AI_Greedy(ChipType.BLACK);
 		
 		playerChips = h.getOwnChips();
 		aiChips = a.getOwnChips();
@@ -40,7 +40,7 @@ public class Board {
 			if(currentTurn == 1){
 				h.setOwnChips(playerChips);
 				h.setOtherChips(aiChips);
-				toTurn = h.possibleMoves();
+				toTurn = h.possibleMoves(playerChips, aiChips);
 				h.spielfeldAusgeben(aiChips, playerChips);
 				
 				BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -57,7 +57,7 @@ public class Board {
 			}else{
 				a.setOwnChips(aiChips);
 				a.setOtherChips(playerChips);
-				toTurn = a.possibleMoves();
+				toTurn = a.possibleMoves(aiChips, playerChips);
 				
 				a.spielfeldAusgeben(aiChips, playerChips);
 				
