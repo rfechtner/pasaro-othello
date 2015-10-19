@@ -54,10 +54,6 @@ public abstract class Player {
 
 		return otherChips;
 	}
-	
-//	public ArrayList<Integer> getMoeglicheZuege(){
-//		return moeglich;
-//	}
 
 	public long getOwnChips() {
 		return ownChips;
@@ -92,7 +88,7 @@ public abstract class Player {
 		}
 	}
 
-	public HashMap<Integer, ArrayList<Integer>> possibleMoves() {
+	public HashMap<Integer, ArrayList<Integer>> possibleMoves(long ownchips, long otherchips) {
 		
 		HashMap<Integer, ArrayList<Integer>> toTurn = new HashMap<Integer, ArrayList<Integer>>();
 		
@@ -107,7 +103,7 @@ public abstract class Player {
 		downLeft.clear();
 		downRight.clear();
 		
-		berechneZuege(otherChips, ownChips, toTurn);
+		berechneZuege(otherchips, ownchips, toTurn);
 		
 		long ausgabe = 0L;
 		
