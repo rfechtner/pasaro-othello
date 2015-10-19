@@ -14,6 +14,9 @@ public abstract class Player {
 	private int score;
 	private long ownChips;
 	private long otherChips;
+	
+	private int ownScore;
+	private int otherScore;
 
 	private ArrayList<Integer> upLeft = new ArrayList<Integer>();
 	private ArrayList<Integer> up = new ArrayList<Integer>();
@@ -445,6 +448,34 @@ public abstract class Player {
 		ausgabe[1] = positionImLong%8;
 		
 		return ausgabe;
+	}
+	
+	public int getOwnScore(long spieler, long gegner){
+		int ausgabe = 0;
+		for (int i = 0; i < 64; i++) {
+			if (((spieler >> i) & 1) == 1) {
+				ausgabe++;
+			}
+		}
+		return ausgabe;
+	}
+	
+	public int getOtherScore(long spieler, long gegner){
+		int ausgabe = 0;
+		for (int i = 0; i < 64; i++) {
+			if (((gegner >> i) & 1) == 1) {
+				ausgabe++;
+			}
+		}
+		return ausgabe;
+	}
+	
+	public boolean isFilled(int spielerScore, int gegnerScore){
+		if((spielerScore + gegnerScore)==64){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	/**
