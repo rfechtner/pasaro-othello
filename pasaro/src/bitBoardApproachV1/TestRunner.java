@@ -7,7 +7,7 @@ public class TestRunner {
 
 	public static void main(String[] args){
 		Human h = new Human(ChipType.WHITE);
-		AI a = new AI(ChipType.BLACK);
+		AI_Greedy a = new AI_Greedy(ChipType.BLACK);
 		
 //		long ab = aa|a.getOwnChips();
 //		
@@ -15,7 +15,7 @@ public class TestRunner {
 //		System.out.println("--------");
 		
 
-		long tmp = (long)Math.pow(2, 63);
+//		long tmp = (long)Math.pow(2, 63);
 		
 //		long tmp2 = 68853694464L;
 //		
@@ -29,14 +29,18 @@ public class TestRunner {
 //		
 //		System.out.println("--------");
 		
-		long weiss = 0L;
+//		long weiss = 0L;
+//		
+//		weiss = weiss | (1L << 63);
+//		
+//		
+//		h.spielfeldAusgeben(weiss, 0L);
+//		
+//		System.out.println("--------");
 		
-		weiss = weiss | (1L << 63);
+		int[] p = a.integerToArray(42);
 		
-		
-		h.spielfeldAusgeben(weiss, 0L);
-		
-		System.out.println("--------");
+		System.out.println("x: "+p[0]+" y: "+p[1]);
 		
 //		tmp = tmp & ~(1 << 8);
 //		

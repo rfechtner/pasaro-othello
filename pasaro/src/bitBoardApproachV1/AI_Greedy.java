@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class AI extends Player {
+public class AI_Greedy extends Player {
 		
-	public AI(ChipType chipType){
+	public AI_Greedy(ChipType chipType){
 		super(chipType, genOwnChips(chipType), genOtherChips(chipType));
 	}
 	
