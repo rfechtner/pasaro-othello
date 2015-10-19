@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-public class AI_Greedy extends Player {
+public class AI_Basic extends Player {
 
 	private HashMap<Integer, Integer> moveScores = new HashMap<Integer, Integer>();
 	private HashMap<Integer, Integer> positionsMatrix = new HashMap<Integer, Integer>();
@@ -20,7 +20,7 @@ public class AI_Greedy extends Player {
 		{  -20, -40,  -5, -5, -5,  -5, -40, -20 },
 		{  120, -20,  20,  5,  5,  20, -20, 120 } };
 
-	public AI_Greedy(ChipType chipType){
+	public AI_Basic(ChipType chipType){
 		super(chipType, genOwnChips(chipType), genOtherChips(chipType));
 		//fills the hashmap with the desired score values for each position
 		int key = 0;
