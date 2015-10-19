@@ -50,16 +50,12 @@ public abstract class Player {
 
 		return ownChips;
 	}
-<<<<<<< HEAD
 
-=======
-	
 	/**
 	 * sets the otherChips to the respective position on the board
 	 * @param chipType
 	 * @return long position of other chips on board
 	 */
->>>>>>> 82480aede6fa766bab03cd60e4a5ea2516705cd5
 	public static long genOtherChips(ChipType chipType) {
 		long otherChips;
 
@@ -95,15 +91,11 @@ public abstract class Player {
 	public ChipType getChipType() {
 		return chipType;
 	}
-<<<<<<< HEAD
 
-=======
-	
 	/**
 	 * prints the contained items in the hashmap
 	 * @param toTurn Hashmap
 	 */
->>>>>>> 82480aede6fa766bab03cd60e4a5ea2516705cd5
 	public void toTurnAusgeben(HashMap<Integer, ArrayList<Integer>> toTurn){
 		for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
 		    Integer key = entry.getKey();
