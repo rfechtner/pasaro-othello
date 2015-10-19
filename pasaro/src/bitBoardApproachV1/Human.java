@@ -6,4 +6,8 @@ public class Human extends Player {
 		super(chipType, genOwnChips(chipType), genOtherChips(chipType));
 	}
 	
+	/**
+	 * Test Human Sam
+	 */
+	
 }
