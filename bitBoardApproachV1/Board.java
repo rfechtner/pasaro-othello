@@ -122,7 +122,7 @@ public class Board {
 				
 				if(flag){
 					finished = true;
-					System.out.println("\t\t\t\t\tKeine Züge für w");
+					System.out.println("\t\t\t\t\tKeine Zuege fuer w");
 					break;
 				}
 				
@@ -159,7 +159,7 @@ public class Board {
 				
 				if(flag ){
 					finished = true;
-					System.out.println("\t\t\t\t\tKeine Züge für s");
+					System.out.println("\t\t\t\t\tKeine Zuege fuer s");
 					break;
 				}
 				
