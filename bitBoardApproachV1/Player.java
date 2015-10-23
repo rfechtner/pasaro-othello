@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Abstract class contains methods for both AI and the player
@@ -14,7 +15,7 @@ public abstract class Player {
 	private int score;
 	private long ownChips;
 	private long otherChips;
-	
+
 	private int ownScore;
 	private int otherScore;
 
@@ -99,7 +100,7 @@ public abstract class Player {
 	 * prints the contained items in the hashmap
 	 * @param toTurn Hashmap
 	 */
-	public void toTurnAusgeben(HashMap<Integer, ArrayList<Integer>> toTurn){
+	public void toTurnAusgeben(ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn){
 		for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
 		    Integer key = entry.getKey();
 		    ArrayList<Integer> value = entry.getValue();
@@ -114,8 +115,8 @@ public abstract class Player {
 	 * @param otherchips , chips of the enemy
 	 * @return hashmap with all the possible moves as key and all positions to turn for the respective move
 	 */
-	public HashMap<Integer, ArrayList<Integer>> possibleMoves(long ownchips, long otherchips) {
-		HashMap<Integer, ArrayList<Integer>> toTurn = new HashMap<Integer, ArrayList<Integer>>();
+	public ConcurrentHashMap<Integer, ArrayList<Integer>> possibleMoves(long ownchips, long otherchips) {
+		ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn = new ConcurrentHashMap<Integer, ArrayList<Integer>>();
 
 		toTurn.clear();
 
@@ -152,7 +153,7 @@ public abstract class Player {
 	 * @param spieler , positions of all chips of the play
 	 * @param toTurn , hashmap to store the possible moves
 	 */
-	public void berechneZuege(long gegner, long spieler, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void berechneZuege(long gegner, long spieler, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		for (int i = 0; i < 64; i++) {
 			if (((spieler >> i) & 1) == 1) {
 				gehtUnten(gegner, spieler, i, toTurn);
@@ -174,9 +175,9 @@ public abstract class Player {
 	 * @param pos
 	 * @param toTurn
 	 */
-	
-	
-	public void gehtUnten(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
+
+
+	public void gehtUnten(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos + 8 > 63) {
 			up.clear();
 			return;
@@ -206,7 +207,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtLinks(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void gehtLinks(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		if ((pos - 1) % 8 == 7) {
 			right.clear();
 			return;
@@ -235,7 +236,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtUntenLinks(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void gehtUntenLinks(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos + 7 > 63 || (pos + 7) % 8 == 7) {
 			upRight.clear();
 			return;
@@ -264,7 +265,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtRechts(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void gehtRechts(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		if ((pos + 1) % 8 == 0) {
 			left.clear();
 			return;
@@ -293,7 +294,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtUntenRechts(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void gehtUntenRechts(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		if ((pos + 9 )> 63 || (pos+9) % 8 == 0) {
 			upLeft.clear();
 			return;
@@ -322,7 +323,7 @@ public abstract class Player {
 		}
 	}
 
-	public void getOben(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void getOben(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos - 8 < 0) {
 			down.clear();
 			return;
@@ -351,7 +352,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtObenRechts(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void gehtObenRechts(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos - 7 < 0 || (pos-7) % 8 == 0) {
 			downLeft.clear();
 			return;
@@ -380,7 +381,7 @@ public abstract class Player {
 		}
 	}
 
-	public void gehtObenLinks(long gegner, long spieler, int pos, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void gehtObenLinks(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		if (pos - 9 < 0 || (pos - 9) % 8 == 7) {
 			downRight.clear();
 			return;
@@ -410,11 +411,11 @@ public abstract class Player {
 	}
 
 	/**
-	 * makes an actual move on the board 
+	 * makes an actual move on the board
 	 * @param dezimal , int position of the move
 	 * @param toTurn , hasmap containing all possible moves
 	 */
-	public void makeMove(int dezimal, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void makeMove(int dezimal, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 
 		ArrayList<Integer> tmpArray = toTurn.get(dezimal);
 
@@ -436,9 +437,9 @@ public abstract class Player {
 		}
 
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param positionImLong
 	 * @return
 	 */
@@ -446,10 +447,10 @@ public abstract class Player {
 		int[] ausgabe = new int[2];
 		ausgabe[0] = positionImLong/8;
 		ausgabe[1] = positionImLong%8;
-		
+
 		return ausgabe;
 	}
-	
+
 	public int getOwnScore(long spieler, long gegner){
 		int ausgabe = 0;
 		for (int i = 0; i < 64; i++) {
@@ -459,7 +460,7 @@ public abstract class Player {
 		}
 		return ausgabe;
 	}
-	
+
 	public int getOtherScore(long spieler, long gegner){
 		int ausgabe = 0;
 		for (int i = 0; i < 64; i++) {
@@ -469,7 +470,7 @@ public abstract class Player {
 		}
 		return ausgabe;
 	}
-	
+
 	public boolean isFilled(int spielerScore, int gegnerScore){
 		if((spielerScore + gegnerScore)==64){
 			return true;

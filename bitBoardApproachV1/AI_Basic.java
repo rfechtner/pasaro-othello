@@ -2,23 +2,25 @@ package bitBoardApproachV1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AI_Basic extends Player {
 
-	private HashMap<Integer, Integer> moveScores = new HashMap<Integer, Integer>();
 	private HashMap<Integer, Integer> positionsMatrix = new HashMap<Integer, Integer>();
 	private long nextOwnChips;
 	private long nextOtherChips;
 	private int[][] posMatrixArray = new int[][]{
-		{  120, -20,  20,  5,  5,  20, -20, 120 },
-		{  -20, -40,  -5, -5, -5,  -5, -40, -20 },
-		{   20,  -5,  15,  3,  3,  15,  -5,  20 },
-		{   5,   -5,   3,  0,  0,   3,  -5,  5 },
-		{   5,   -5,   3,  0,  0,   3,  -5,  5 },
-		{   20,  -5,  15,  3,  3,  15,  -5,  20 },
-		{  -20, -40,  -5, -5, -5,  -5, -40, -20 },
-		{  120, -20,  20,  5,  5,  20, -20, 120 } };
+		{   99,  -8,   8,  6,  6,   8,  -8,  99 },
+		{   -8, -24,  -4, -3, -3,  -4, -24,  -8 },
+		{    8,  -4,   7,  4,  4,   7,  -4,   8 },
+		{    6,  -3,   3,  0,  0,   3,  -3,   6 },
+		{    6,  -3,   3,  0,  0,   3,  -3,   6 },
+		{    8,  -4,   7,  4,  4,   7,  -4,   8 },
+		{   -8, -24,  -4, -3, -3,  -4, -24,  -8 },
+		{   99,  -8,   8,  6,  6,   8,  -8,  99 } };
 
 	public AI_Basic(ChipType chipType){
 		super(chipType, genOwnChips(chipType), genOtherChips(chipType));
@@ -32,23 +34,27 @@ public class AI_Basic extends Player {
 		}
 	}
 
-	public void makeMove(int dezimal, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void makeMove(int dezimal, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 		super.makeMove(dezimal, toTurn);
 	}
+
 
 	/**
 	 * Updates scoring hash with new possible moves array and returns the position corresponding to the highest score --- the best move
 	 * @param possibleMoves - array of all possible moves
 	 * @return bestMove - position on board of best move calculated from best score
 	 */
-
-
-	public int getBestMove(Set<Integer> possibleMoves, int futTurns, HashMap<Integer, ArrayList<Integer>> toTurn){
+	public int getBestMove(int futTurns, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn){
+		ConcurrentHashMap<Integer, Integer> moveScores = new ConcurrentHashMap<Integer, Integer>();
+		nextOwnChips = getOwnChips();
+		nextOtherChips = getOtherChips();
+		Set<Integer> possibleMoves = toTurn.keySet();
 		int bestMove=0;
-		int bestScore=0;
-		calculateScores(possibleMoves, futTurns, toTurn);
+		int bestScore=Integer.MIN_VALUE;
+		moveScores = calculateScores(futTurns, toTurn);
 		//iterate through the best score hashmap selecting and storing the best score and move
 		for(Integer i : possibleMoves){
+			System.out.println("Possible move: "+i+" with score of: "+moveScores.get(i));
 			if(bestScore < moveScores.get(i)){
 				bestScore = moveScores.get(i);
 				bestMove = i;
@@ -57,21 +63,6 @@ public class AI_Basic extends Player {
 		return bestMove;
 	}
 
-	/**
-	 * Update moveScores hashmap with scores for all possible moves
-	 * @param possibleMoves - array of all possible moves
-	 */
-
-	public void calculateScores(Set<Integer> possibleMoves, int futTurns, HashMap<Integer, ArrayList<Integer>> toTurn){
-		//fill hash loop with possible move as key and score as value
-		for(Integer i : possibleMoves){
-			int score = 0;
-			score += edgeScore(i);
-			score += turnScore(i, toTurn);
-			score += vulnerabilityScore(i, futTurns);
-			moveScores.put(i, score);
-		}
-	}
 
 	/**
 	 * Runs similar to getBestMove but returns the score associated with the best move rather than the move itself.
@@ -79,19 +70,48 @@ public class AI_Basic extends Player {
 	 * @param futTurns - how many turns into the future the method should look
 	 * @return bestScore - the calculated best score
 	 */
-
-	public int getBestScore(Set<Integer> possibleMoves, int futTurns, HashMap<Integer, ArrayList<Integer>> toTurn){
+	public int getBestScore(int futTurns, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn){
+		ConcurrentHashMap<Integer, Integer> moveScores2 = new ConcurrentHashMap<Integer, Integer>();
 		int bestScore = Integer.MIN_VALUE;
+		Set<Integer> possibleMoves = toTurn.keySet();
 
-		calculateScores(possibleMoves, futTurns, toTurn);
+		moveScores2 = calculateScores(futTurns, toTurn);
 		//iterate through the best score hashmap selecting and storing the best score
 		for(Integer i : possibleMoves){
-			if(bestScore < moveScores.get(i)){
-				bestScore = moveScores.get(i);
+			if(bestScore < moveScores2.get(i)){
+				bestScore = moveScores2.get(i);
 			}
 		}
 		return bestScore;
 	}
+
+
+	/**
+	 * Update moveScores hashmap with scores for all possible moves
+	 * @param possibleMoves - array of all possible moves
+	 */
+	public ConcurrentHashMap<Integer, Integer> calculateScores(int futTurns, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn){
+		ConcurrentHashMap<Integer, ArrayList<Integer>> toTurnClone = new ConcurrentHashMap<Integer, ArrayList<Integer>>();
+		ConcurrentHashMap<Integer, Integer> newMoveScores = new ConcurrentHashMap<Integer, Integer>();
+		Set<Integer> possibleMoves = toTurn.keySet();
+		toTurnClone = toTurn;
+		//fill hash loop with possible move as key and score as value
+		System.out.println("PossibleMoves.size: "+possibleMoves.size());
+		for(Integer i : possibleMoves){
+			toTurn = toTurnClone;
+			int score = 0;
+			score += edgeScore(i);
+			score += turnScore(i, toTurn);
+			if(futTurns>0){
+				score += vulnerabilityScore(i, futTurns);
+			}
+			newMoveScores.put(i, score);
+			System.out.println("for: "+i+" size: "+newMoveScores.size());
+		}
+
+		return newMoveScores;
+	}
+
 
 	/**
 	 * Reads a value out of the positionsMatrix hashmap
@@ -102,18 +122,16 @@ public class AI_Basic extends Player {
 		return positionsMatrix.get(move);
 	}
 
+
 	/**
 	 * Increases score by the amount of pieces the move would turn over
 	 * @param move - move to be executed
 	 * @return score
 	 */
-	public int turnScore(int move, HashMap<Integer, ArrayList<Integer>> toTurn){
-		int score=0;
-		for (Integer i : toTurn.get(move)) {
-		    score += i;
-		}
-		return score;
+	public int turnScore(int move, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn){
+		return toTurn.get(move).size();
 	}
+
 
 	/**
 	 * Calculates the vulnerability each move would create. Calls up the scoring methods for the board one move in the future. Works recursively until futureTurns is depleted
@@ -122,38 +140,42 @@ public class AI_Basic extends Player {
 	 * @return score
 	 */
 	public int vulnerabilityScore(int move, int futureTurns){
-		nextOwnChips = getOwnChips();
-		nextOtherChips = getOtherChips();
-		HashMap<Integer, ArrayList<Integer>> toTurn = new HashMap<Integer, ArrayList<Integer>>();
-		Set<Integer> nextPossMoves;
+		ConcurrentHashMap<Integer, ArrayList<Integer>> nextToTurn = new ConcurrentHashMap<Integer, ArrayList<Integer>>();
+		System.out.println("move: "+move);
 		int nextMoveBestScore = Integer.MIN_VALUE;
-		int toBeSubtracted = 0;
+		long origNextOwnChips = nextOwnChips;
+		long origNextOtherChips = nextOtherChips;
+		System.out.println("nextOwnChips: "+nextOwnChips);
+		System.out.println("nextOtherChips: "+nextOtherChips);
+		nextToTurn = possibleMoves(nextOwnChips, nextOtherChips);
+		makeMoveFuture(move, nextToTurn);
+		nextToTurn.clear();
+		nextToTurn = possibleMoves(nextOtherChips, nextOwnChips);
+		nextMoveBestScore = getBestScore(--futureTurns, nextToTurn);
 
-		toTurn = possibleMoves (nextOwnChips, nextOtherChips);
-		makeMoveFuture(move, toTurn);
-		toTurn = possibleMoves (nextOwnChips, nextOtherChips);
-		nextPossMoves = toTurn.keySet();
-		nextMoveBestScore = getBestScore(nextPossMoves, --futureTurns, toTurn);
+		nextOwnChips = origNextOwnChips;
+		nextOtherChips = origNextOtherChips;
+
 		if(nextMoveBestScore > 120){
-			toBeSubtracted = 50;
+			return -50;
 		}else if(nextMoveBestScore > 50){
-			toBeSubtracted = 10;
+			return -10;
 		}else if(nextMoveBestScore > 30){
-			toBeSubtracted = 5;
+			return -5;
 		}else if(nextMoveBestScore > 10){
-			toBeSubtracted = 3;
+			return -3;
 		}else{
-			toBeSubtracted = 0;
+			return 0;
 		}
-		return toBeSubtracted;
 	}
+
 
 	/**
 	 * Functions identical to makeMove from Player class but works with future chips
 	 * @param dezimal - move to make
 	 * @param toTurn - current possible moves
 	 */
-	public void makeMoveFuture(int dezimal, HashMap<Integer, ArrayList<Integer>> toTurn) {
+	public void makeMoveFuture(int dezimal, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
 
 		ArrayList<Integer> tmpArray = toTurn.get(dezimal);
 
