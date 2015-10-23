@@ -16,9 +16,6 @@ public abstract class Player {
 	private long ownChips;
 	private long otherChips;
 
-	private int ownScore;
-	private int otherScore;
-
 	private ArrayList<Integer> upLeft = new ArrayList<Integer>();
 	private ArrayList<Integer> up = new ArrayList<Integer>();
 	private ArrayList<Integer> upRight = new ArrayList<Integer>();
@@ -100,7 +97,7 @@ public abstract class Player {
 	 * prints the contained items in the hashmap
 	 * @param toTurn Hashmap
 	 */
-	public void toTurnAusgeben(ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn){
+	public void toTurnAusgeben(HashMap<Integer, ArrayList<Integer>> toTurn){
 		for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
 		    Integer key = entry.getKey();
 		    ArrayList<Integer> value = entry.getValue();
@@ -136,9 +133,11 @@ public abstract class Player {
 		for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
 		    Integer key = entry.getKey();
 		    ArrayList<Integer> value = entry.getValue();
-
+		    if(value.isEmpty()){
+		    	toTurn.remove(key);
+		    }else{
 		    System.out.println("Moeglicher Zug (toTurn): "+key+" --> "+value);
-
+		    }
 		}
 
 		possibleMoves = ausgabe;
@@ -199,7 +198,7 @@ public abstract class Player {
 			}
 			up.clear();
 
-			System.out.println("Umzudrehen fuer: "+(pos+8)+" "+toTurn.get(pos+8));
+			System.out.println("(U)Umzudrehen fuer: "+(pos+8)+" "+toTurn.get(pos+8));
 
 			gegnerDazwischen = false;
 		}else{
@@ -208,7 +207,7 @@ public abstract class Player {
 	}
 
 	public void gehtLinks(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
-		if ((pos - 1) % 8 == 7) {
+		if ((pos - 1) % 8 == 7 || (pos - 1) < 0) {
 			right.clear();
 			return;
 		} else if (((gegner >> pos - 1) & 1) == 1) {
@@ -228,7 +227,7 @@ public abstract class Player {
 			}
 			right.clear();
 
-			System.out.println("Umzudrehen fuer: "+(pos-1)+" "+toTurn.get(pos-1));
+			System.out.println("(L)Umzudrehen fuer: "+(pos-1)+" "+toTurn.get(pos-1));
 
 			gegnerDazwischen = false;
 		}else{
@@ -257,7 +256,7 @@ public abstract class Player {
 			}
 			upRight.clear();
 
-			System.out.println("Umzudrehen fuer: "+(pos+7)+" "+toTurn.get(pos+7));
+			System.out.println("(UL)Umzudrehen fuer: "+(pos+7)+" "+toTurn.get(pos+7));
 
 			gegnerDazwischen = false;
 		}else{
@@ -266,7 +265,7 @@ public abstract class Player {
 	}
 
 	public void gehtRechts(long gegner, long spieler, int pos, ConcurrentHashMap<Integer, ArrayList<Integer>> toTurn) {
-		if ((pos + 1) % 8 == 0) {
+		if ((pos + 1) % 8 == 0 || (pos + 1) > 63) {
 			left.clear();
 			return;
 		} else if (((gegner >> pos + 1) & 1) == 1) {
@@ -286,7 +285,7 @@ public abstract class Player {
 			}
 			left.clear();
 
-			System.out.println("Umzudrehen fuer: "+(pos+1)+" "+toTurn.get(pos+1));
+			System.out.println("(R)Umzudrehen fuer: "+(pos+1)+" "+toTurn.get(pos+1));
 
 			gegnerDazwischen = false;
 		}else{
@@ -315,7 +314,7 @@ public abstract class Player {
 			}
 			upLeft.clear();
 
-			System.out.println("Umzudrehen fuer: "+(pos+9)+" "+toTurn.get(pos+9));
+			System.out.println("(UR)Umzudrehen fuer: "+(pos+9)+" "+toTurn.get(pos+9));
 
 			gegnerDazwischen = false;
 		}else{
@@ -344,7 +343,7 @@ public abstract class Player {
 			}
 			down.clear();
 
-			System.out.println("Umzudrehen fuer: "+(pos-8)+" "+toTurn.get(pos-8));
+			System.out.println("(O)Umzudrehen fuer: "+(pos-8)+" "+toTurn.get(pos-8));
 
 			gegnerDazwischen = false;
 		}else{
@@ -373,7 +372,7 @@ public abstract class Player {
 			}
 			downLeft.clear();
 
-			System.out.println("Umzudrehen fuer: "+(pos-7)+" "+toTurn.get(pos-7));
+			System.out.println("(OR)Umzudrehen fuer: "+(pos-7)+" "+toTurn.get(pos-7));
 
 			gegnerDazwischen = false;
 		}else{
@@ -402,7 +401,7 @@ public abstract class Player {
 			}
 			downRight.clear();
 
-			System.out.println("Umzudrehen fuer: "+(pos-9)+" "+toTurn.get(pos-9));
+			System.out.println("(OL)Umzudrehen fuer: "+(pos-9)+" "+toTurn.get(pos-9));
 
 			gegnerDazwischen = false;
 		}else{
@@ -451,6 +450,30 @@ public abstract class Player {
 		return ausgabe;
 	}
 
+	/**
+	 * prints the current board to the promt
+	 * @param schwarz , positions of the enemy
+	 * @param weiss , positions of the player
+	 */
+	public void spielfeldAusgeben(long schwarz, long weiss) {
+		String spielfeld[][] = new String[8][8];
+		for (int i = 0; i < 64; i++) {
+			spielfeld[i / 8][i % 8] = " ";
+		}
+
+		for (int i = 0; i < 64; i++) {
+			if (((schwarz >> i) & 1) == 1) {
+				spielfeld[i / 8][i % 8] = "s";
+			}
+			if (((weiss >> i) & 1) == 1) {
+				spielfeld[i / 8][i % 8] = "w";
+			}
+		}
+		for (int i = 0; i < 8; i++) {
+			System.out.println(Arrays.toString(spielfeld[i]));
+		}
+	}
+
 	public int getOwnScore(long spieler, long gegner){
 		int ausgabe = 0;
 		for (int i = 0; i < 64; i++) {
@@ -476,30 +499,6 @@ public abstract class Player {
 			return true;
 		}else{
 			return false;
-		}
-	}
-
-	/**
-	 * prints the current board to the promt
-	 * @param schwarz , positions of the enemy
-	 * @param weiss , positions of the player
-	 */
-	public void spielfeldAusgeben(long schwarz, long weiss) {
-		String spielfeld[][] = new String[8][8];
-		for (int i = 0; i < 64; i++) {
-			spielfeld[i / 8][i % 8] = " ";
-		}
-
-		for (int i = 0; i < 64; i++) {
-			if (((schwarz >> i) & 1) == 1) {
-				spielfeld[i / 8][i % 8] = "s";
-			}
-			if (((weiss >> i) & 1) == 1) {
-				spielfeld[i / 8][i % 8] = "w";
-			}
-		}
-		for (int i = 0; i < 8; i++) {
-			System.out.println(Arrays.toString(spielfeld[i]));
 		}
 	}
 }
