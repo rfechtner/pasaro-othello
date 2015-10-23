@@ -198,7 +198,7 @@ public abstract class Player {
 			}
 			up.clear();
 
-			System.out.println("(U)Umzudrehen fuer: "+(pos+8)+" "+toTurn.get(pos+8));
+//			System.out.println("(U)Umzudrehen fuer: "+(pos+8)+" "+toTurn.get(pos+8));
 
 			gegnerDazwischen = false;
 		}else{
@@ -227,7 +227,7 @@ public abstract class Player {
 			}
 			right.clear();
 
-			System.out.println("(L)Umzudrehen fuer: "+(pos-1)+" "+toTurn.get(pos-1));
+//			System.out.println("(L)Umzudrehen fuer: "+(pos-1)+" "+toTurn.get(pos-1));
 
 			gegnerDazwischen = false;
 		}else{
@@ -256,7 +256,7 @@ public abstract class Player {
 			}
 			upRight.clear();
 
-			System.out.println("(UL)Umzudrehen fuer: "+(pos+7)+" "+toTurn.get(pos+7));
+//			System.out.println("(UL)Umzudrehen fuer: "+(pos+7)+" "+toTurn.get(pos+7));
 
 			gegnerDazwischen = false;
 		}else{
@@ -285,7 +285,7 @@ public abstract class Player {
 			}
 			left.clear();
 
-			System.out.println("(R)Umzudrehen fuer: "+(pos+1)+" "+toTurn.get(pos+1));
+//			System.out.println("(R)Umzudrehen fuer: "+(pos+1)+" "+toTurn.get(pos+1));
 
 			gegnerDazwischen = false;
 		}else{
@@ -314,7 +314,7 @@ public abstract class Player {
 			}
 			upLeft.clear();
 
-			System.out.println("(UR)Umzudrehen fuer: "+(pos+9)+" "+toTurn.get(pos+9));
+//			System.out.println("(UR)Umzudrehen fuer: "+(pos+9)+" "+toTurn.get(pos+9));
 
 			gegnerDazwischen = false;
 		}else{
@@ -343,7 +343,7 @@ public abstract class Player {
 			}
 			down.clear();
 
-			System.out.println("(O)Umzudrehen fuer: "+(pos-8)+" "+toTurn.get(pos-8));
+//			System.out.println("(O)Umzudrehen fuer: "+(pos-8)+" "+toTurn.get(pos-8));
 
 			gegnerDazwischen = false;
 		}else{
@@ -372,7 +372,7 @@ public abstract class Player {
 			}
 			downLeft.clear();
 
-			System.out.println("(OR)Umzudrehen fuer: "+(pos-7)+" "+toTurn.get(pos-7));
+//			System.out.println("(OR)Umzudrehen fuer: "+(pos-7)+" "+toTurn.get(pos-7));
 
 			gegnerDazwischen = false;
 		}else{
@@ -401,7 +401,7 @@ public abstract class Player {
 			}
 			downRight.clear();
 
-			System.out.println("(OL)Umzudrehen fuer: "+(pos-9)+" "+toTurn.get(pos-9));
+//			System.out.println("(OL)Umzudrehen fuer: "+(pos-9)+" "+toTurn.get(pos-9));
 
 			gegnerDazwischen = false;
 		}else{

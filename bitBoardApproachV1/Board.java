@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,6 +13,8 @@ public class Board {
 	boolean finished;
 	long playerChips;
 	long aiChips;
+	
+	int winner = 0;
 
 	int scoreSpieler1;
 	int scoreSpieler2;
@@ -22,6 +23,7 @@ public class Board {
 	AI_Greedy a, a2;
 	AI_Basic ab;
 	AI_Random r;
+	AI_Matrix aM;
 
 	public void initGame(){
 
@@ -30,12 +32,13 @@ public class Board {
 //		h = new Human(ChipType.WHITE);
 
 		r = new AI_Random(ChipType.BLACK);
+		aM = new AI_Matrix(ChipType.WHITE);
 //		a = new AI_Greedy(ChipType.BLACK);
-		ab = new AI_Basic(ChipType.WHITE);
+//		ab = new AI_Basic(ChipType.WHITE);
 
 //		playerChips = h.getOwnChips();
 		aiChips = r.getOwnChips();
-		playerChips = ab.getOwnChips();
+		playerChips = aM.getOwnChips();
 
 		currentTurn = 1 + (int)(Math.random() * ((2 - 1) + 1));
 		if(currentTurn==1){
@@ -154,10 +157,10 @@ public class Board {
 				/*
 				 * AI Basic
 				 */
-				ab.setOwnChips(playerChips);
-				ab.setOtherChips(aiChips);
-				toTurn = ab.possibleMoves(playerChips, aiChips);
-				ab.spielfeldAusgeben(aiChips, playerChips);
+				aM.setOwnChips(playerChips);
+				aM.setOtherChips(aiChips);
+				toTurn = aM.possibleMoves(playerChips, aiChips);
+				aM.spielfeldAusgeben(aiChips, playerChips);
 
 				boolean flag = true;
 				for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
@@ -175,57 +178,19 @@ public class Board {
 					break;
 				}
 
-				int bestMove = ab.getBestMove(1, toTurn);
-				System.out.println("BEST MOVE FOR AI:"+bestMove);
-				ab.makeMove(bestMove, toTurn);
+				aM.makeMoveAI(toTurn);
 
-				aiChips = ab.getOtherChips();
-				playerChips = ab.getOwnChips();
-				scoreSpieler1 = ab.getOwnScore(playerChips, aiChips);
-				scoreSpieler2 = ab.getOtherScore(playerChips, aiChips);
+				aiChips = aM.getOtherChips();
+				playerChips = aM.getOwnChips();
+				scoreSpieler1 = aM.getOwnScore(playerChips, aiChips);
+				scoreSpieler2 = aM.getOtherScore(playerChips, aiChips);
 
-				if(ab.isFilled(scoreSpieler1, scoreSpieler2)){
+				if(aM.isFilled(scoreSpieler1, scoreSpieler2)){
 					finished = true;
 					break;
 				}
 
 				currentTurn = 1;
-//				a.setOwnChips(aiChips);
-//				a.setOtherChips(playerChips);
-//				toTurn = a.possibleMoves(aiChips, playerChips);
-//
-//				a.spielfeldAusgeben(aiChips, playerChips);
-//
-//				boolean flag = true;
-//				for (Entry<Integer, ArrayList<Integer>> entry : toTurn.entrySet()) {
-//				    ArrayList<Integer> value = entry.getValue();
-//
-//				    if(!value.isEmpty()){
-//				    	flag = false;
-//				    }
-//
-//				}
-//
-//				if(flag ){
-//					finished = true;
-//					System.out.println("\t\t\t\t\tKeine Zuege fuer s");
-//					break;
-//				}
-//
-//				a.makeMoveAI(toTurn);
-//
-//				aiChips = a.getOwnChips();
-//				playerChips = a.getOtherChips();
-//
-//				scoreSpieler2 = a.getOwnScore(aiChips, playerChips);
-//				scoreSpieler1 = a.getOtherScore(aiChips, playerChips);
-//
-//				if(a.isFilled(scoreSpieler1, scoreSpieler2)){
-//					finished = true;
-//					break;
-//				}
-//
-//				currentTurn = 1;
 
 			}
 		}
@@ -239,8 +204,10 @@ public class Board {
 		System.out.println("Starting turn: "+startingTurn);
 		if(scoreSpieler1>scoreSpieler2){
 			System.out.println("The winner is white!");
+			winner = 2;
 		}else{
 			System.out.println("The winner is black!");
+			winner = 1;
 		}
 	}
 
